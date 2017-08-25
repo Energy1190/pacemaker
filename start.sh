@@ -19,8 +19,6 @@ fi
 done
 
 echo "hacluster:${HACLUSTER}" | chgpasswd
-curl --create-dirs -o /usr/lib/ocf/resource.d/percona/IPaddr3 https://raw.githubusercontent.com/percona/percona-pacemaker-agents/master/agents/IPaddr3
-chmod u+x /usr/lib/ocf/resource.d/percona/IPaddr3
 
 if [ "$(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/leader | jq -r .node.value)" == "mysql-${HOSTNAME}" ]; then
 pcs cluster auth ${HOSTS[@]} -u hacluster -p ${HACLUSTER} --force
