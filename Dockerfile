@@ -6,7 +6,9 @@ RUN apt-get update -y \
     && apt-get install -y \
 	   pcs \
 	   pacemaker \
-	   corosync
+	   corosync \
+	   curl \
+	   jq \
 
 RUN chmod +x /start.sh
 
