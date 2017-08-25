@@ -8,7 +8,7 @@ RUN apt-get update -y \
 	   pacemaker \
 	   corosync \
 	   curl \
-	   jq \
+	   jq
 
 RUN chmod +x /start.sh
 RUN curl --create-dirs -o /usr/lib/ocf/resource.d/percona/IPaddr3 https://raw.githubusercontent.com/percona/percona-pacemaker-agents/master/agents/IPaddr3 \
