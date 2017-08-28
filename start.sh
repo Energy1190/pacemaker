@@ -18,6 +18,7 @@ done
 
 echo "hacluster:${HACLUSTER}" | chpasswd
 service pcsd start
+rm -f /etc/corosync/corosync.conf
 sleep 10
 service pcsd status
 curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs/${HOST_NAME} -XPUT -d value="True"
