@@ -4,11 +4,12 @@ ADD start.sh /start.sh
 
 RUN apt-get update -y \
     && apt-get install -y \
-	   pcs \
 	   pacemaker \
 	   corosync \
 	   iptables \
 	   curl \
+	   kmod \
+           pcs \
 	   jq
 
 RUN chmod +x /start.sh
