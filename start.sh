@@ -41,4 +41,5 @@ sleep 1;
 done
 fi
 
-pcs cluster status
+pcs cluster statusCMD 
+exec tail -f /var/log/pcsd/pcsd.log
