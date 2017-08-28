@@ -15,4 +15,4 @@ RUN curl --create-dirs -o /usr/lib/ocf/resource.d/percona/IPaddr3 https://raw.gi
     && chmod u+x /usr/lib/ocf/resource.d/percona/IPaddr3
     
 ENTRYPOINT ["/start.sh"]
-CMD ["tail", "-f", "/var/log/pcsd.log"]
+CMD ["tail", "-f", "/var/log/pcsd/pcsd.log"]
