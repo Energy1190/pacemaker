@@ -3,7 +3,6 @@
 HOST_NAME=$(hostname)
 PASSWD=${HACLUSTER}
 HOSTS=()
-HOSTS+=("${HOST_NAME}")
 MAX_NODES=$(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/max_nodes | jq -r '.node.value')
 
 for node in $(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/ip/ | jq -r '.node.nodes[] | .key + "=" + .value'); do
