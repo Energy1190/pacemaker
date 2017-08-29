@@ -50,10 +50,12 @@ sleep 30
 for node in $(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/ | jq -r ".node.nodes[] | select(.value == \"$(printf 'out')\") | .key"); do
 IFS='/' read -ra RESULT <<< $node
 OUT=${RESULT[-1]}
+if [ "${OUT}" != "$(hostname)" ]; then
 pcs cluster auth ${OUT} -u hacluster -p ${HACLUSTER} --force
 pcs cluster node remove ${OUT}
 pcs cluster node add --start ${OUT}
 echo "Node ${OUT} back in cluster"
+fi
 done
 done
 else
