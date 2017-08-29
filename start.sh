@@ -36,10 +36,29 @@ pcs resource create ClusterIP ocf:percona:IPaddr3 params ip="${VIRTUAL_IP}" cidr
 #pcs resource create ClusterIP ocf:heartbeat:IPaddr2 ip="${VIRTUAL_IP}" cidr_netmask=19 op monitor interval=10s
 #pcs resource clone ClusterIP meta clone-max=${#HOSTS[@]} clone-node-max=${#HOSTS[@]} globally-unique=true
 curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_cluster -XPUT -d value="True"
+for node in "${HOSTS[@]}"; do
+curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$node -XPUT -d value="in"
+done
+while true; do
+sleep 30
+for node in $(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/ | jq -r ".node.nodes[] | select(.value == \"$(printf 'out')\") | .key"); do
+IFS='/' read -ra RESULT <<< $node
+OUT=${RESULT[-1]}
+pcs cluster auth ${OUT} -u hacluster -p ${HACLUSTER} --force
+pcs cluster node remove ${OUT}
+pcs cluster node add --start ${OUT}
+echo "Node ${OUT} back in cluster"
+done
+done
 else
 while  [ $(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_cluster | jq -r '.node.value') == "null" ]; do
 sleep 1;
 done
+IN=$(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname))
+if [ "${IN}" == "in" ]; then
+echo "Node $(hostname) back in cluster"
+curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname) -XPUT -d value="out"
+fi
 fi
 
 pcs cluster status
