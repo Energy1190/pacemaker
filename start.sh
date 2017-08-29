@@ -32,7 +32,8 @@ pcs cluster setup --force --name Cluster ${HOSTS[@]}
 pcs cluster start --all
 pcs property set no-quorum-policy=ignore
 pcs property set stonith-enabled=false
-pcs resource create ClusterIP ocf:percona:IPaddr3 params ip="${VIRTUAL_IP}" cidr_netmask="19" nic="eth0" clusterip_hash="sourceip" op monitor interval="10s"
+#pcs resource create ClusterIP ocf:percona:IPaddr3 params ip="${VIRTUAL_IP}" cidr_netmask="19" nic="eth0" clusterip_hash="sourceip" op monitor interval="10s"
+pcs resource create ClusterIP ocf:heartbeat:IPaddr2 ip="${VIRTUAL_IP}" cidr_netmask=19 op monitor interval=10s
 pcs resource clone ClusterIP meta clone-max=${#HOSTS[@]} clone-node-max=${#HOSTS[@]} globally-unique=true
 curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_cluster -XPUT -d value="True"
 else
