@@ -16,6 +16,12 @@ H=$(echo "${HOST}" | sed 's/mysql-//g')
 HOSTS+=("${H}")
 done
 
+IN=$(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname))
+if [ "${IN}" == "in" ]; then
+echo "Node $(hostname) back in cluster"
+curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname) -XPUT -d value="out"
+fi
+
 echo "hacluster:${HACLUSTER}" | chpasswd
 service pcsd start
 rm -f /etc/corosync/corosync.conf
@@ -54,11 +60,6 @@ else
 while  [ $(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_cluster | jq -r '.node.value') == "null" ]; do
 sleep 1;
 done
-IN=$(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname))
-if [ "${IN}" == "in" ]; then
-echo "Node $(hostname) back in cluster"
-curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname) -XPUT -d value="out"
-fi
 fi
 
 pcs cluster status
