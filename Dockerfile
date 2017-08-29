@@ -7,6 +7,7 @@ RUN apt-get update -y \
 	   pacemaker \
 	   corosync \
 	   iptables \
+	   insserv \
 	   curl \
 	   kmod \
            pcs \
