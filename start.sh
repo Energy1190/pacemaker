@@ -18,7 +18,7 @@ done
 
 CHECK=$(curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname) | jq -r .node.key)
 IFS='/' read -ra RESULT <<< ${CHECK}
-IN=${RESULT[1-]}
+IN=${RESULT[-1]}
 if [ "${IN}" == "in" ]; then
 echo "Node $(hostname) back in cluster"
 curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/$(hostname) -XPUT -d value="out"
