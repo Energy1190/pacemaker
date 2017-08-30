@@ -54,7 +54,10 @@ if [ "${OUT}" != "$(hostname)" ]; then
 pcs cluster auth ${OUT} -u hacluster -p ${HACLUSTER} --force
 pcs cluster node remove ${OUT}
 pcs cluster node add --start ${OUT}
+if [ ! "$?" ]; then
 echo "Node ${OUT} back in cluster"
+curl -s http://${ETCD_HOST}:2379/v2/keys/mysql/pcs_nodes/${OUT} -XPUT -d value="in"
+fi
 fi
 done
 done
